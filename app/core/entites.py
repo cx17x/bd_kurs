@@ -28,6 +28,14 @@ class OrderStatus(Enum):
 
 
 @dataclasses.dataclass
+class OrderCreateRequest:
+    order_number: int  # Номер заказа
+    status: OrderStatus  # Статус заказа
+    order_date: str  # Дата заказа (формат YYYY-MM-DD)
+    employee_code: int  # Код сотрудника, связанного с заказом
+
+
+@dataclasses.dataclass
 class Harvest:  # Harvest
     harvest_code: int
     harvest_type: HarvestType

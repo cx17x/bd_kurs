@@ -1,11 +1,10 @@
-from abc import ABC, abstractmethod
-from typing import List, Optional
+from abc import abstractmethod, ABC
 
-from app.core.entites import Employee
+from app.core.i_for_uc.i_db_getter import BaseDBGetter
 
 
 class EmployeeDBGatewayInterface(ABC):
-    """Интерфейс для работы с таблицей 'Employee'."""
+    """Интерфейс для работы с таблицей Employee"""
 
     @abstractmethod
     async def update_employee_position(self, employee_code: int, new_position: str) -> None:
