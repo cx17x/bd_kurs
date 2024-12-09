@@ -36,7 +36,6 @@ def upgrade() -> None:
         );
     """)
 
-
     op.execute("""
         CREATE TABLE IF NOT EXISTS Equipment (
             equipment_code INT PRIMARY KEY,
@@ -64,6 +63,15 @@ def upgrade() -> None:
             order_date DATE NOT NULL,
             employee_code INT,
             FOREIGN KEY (employee_code) REFERENCES Employee(employee_code)
+        );
+    """)
+
+    op.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            user_id SERIAL PRIMARY KEY,
+            username VARCHAR(50) UNIQUE NOT NULL,
+            hashed_password VARCHAR(255) NOT NULL,
+            role VARCHAR(20) NOT NULL
         );
     """)
 
