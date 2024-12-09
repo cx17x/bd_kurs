@@ -4,8 +4,8 @@ from typing import List, Dict
 
 from app.core.entites import OrderStatus, OrderCreateRequest
 from app.data.datebase import get_db_connection
-from app.data.sql.sql_db_getter import SQLDBGetter
-from app.data.sql.sql_order_gateway import SQLOrderDBGateway
+from app.data.sql.sql_db_getter.sql_db_getter import SQLDBGetter
+from app.data.sql.sql_order_gateway.sql_order_gateway import SQLOrderDBGateway
 
 order_gateway = APIRouter()
 

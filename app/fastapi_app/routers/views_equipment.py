@@ -5,8 +5,8 @@ from fastapi import Depends, HTTPException, APIRouter
 
 from app.core.entites import EquipmentCondition
 from app.data.datebase import get_db_connection
-from app.data.sql.sql_db_getter import SQLDBGetter
-from app.data.sql.sql_equipment_gateway import SQLEquipmentDBGateway
+from app.data.sql.sql_db_getter.sql_db_getter import SQLDBGetter
+from app.data.sql.sql_equipment_gateway.sql_equipment_gateway import SQLEquipmentDBGateway
 
 equipment_gateway = APIRouter()
 

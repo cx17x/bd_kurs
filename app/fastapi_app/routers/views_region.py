@@ -5,8 +5,8 @@ from fastapi import Depends, HTTPException, APIRouter
 
 from app.core.entites import Region
 from app.data.datebase import get_db_connection
-from app.data.sql.sql_db_getter import SQLDBGetter
-from app.data.sql.sql_region_gateway import SQLRegionDBGateway
+from app.data.sql.sql_db_getter.sql_db_getter import SQLDBGetter
+from app.data.sql.sql_region_gateway.sql_region_gateway import SQLRegionDBGateway
 
 region_gateway = APIRouter()
 

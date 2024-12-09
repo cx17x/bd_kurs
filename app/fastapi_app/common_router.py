@@ -1,10 +1,10 @@
 from fastapi import APIRouter
 
-from app.fastapi_app.view.views_employee import employee_gateway
-from app.fastapi_app.view.views_equipment import equipment_gateway
-from app.fastapi_app.view.views_harvest import harvest_gateway
-from app.fastapi_app.view.views_order import order_gateway
-from app.fastapi_app.view.views_region import region_gateway
+from app.fastapi_app.routers.views_employee import employee_gateway
+from app.fastapi_app.routers.views_equipment import equipment_gateway
+from app.fastapi_app.routers.views_harvest import harvest_gateway
+from app.fastapi_app.routers.views_order import order_gateway
+from app.fastapi_app.routers.views_region import region_gateway
 
 main_router = APIRouter()
 

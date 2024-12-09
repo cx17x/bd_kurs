@@ -4,8 +4,8 @@ from asyncpg import Connection
 from fastapi import APIRouter, HTTPException, Depends
 
 from app.data.datebase import get_db_connection
-from app.data.sql.sql_db_getter import SQLDBGetter
-from app.data.sql.sql_employee_gateway import SQLEmployeeDBGateway
+from app.data.sql.sql_db_getter.sql_db_getter import SQLDBGetter
+from app.data.sql.sql_employee_gateway.sql_employee_gateway import SQLEmployeeDBGateway
 
 employee_gateway = APIRouter()
 
