@@ -13,15 +13,15 @@ class SQLEquipmentDBGateway(EquipmentDBGatewayInterface):
         self.connection = connection
 
     async def create_equipment(
-        self, equipment_code: int, equipment_type: str, condition: EquipmentCondition,
-        employee_code: Optional[int] = None, region_code: Optional[int] = None
+            self, equipment_code: int, equipment_type: str, condition: EquipmentCondition,
+            employee_code: Optional[int] = None, region_code: Optional[int] = None
     ) -> None:
-
         query = """
             INSERT INTO Equipment (equipment_code, equipment_type, condition, employee_code, region_code)
             VALUES ($1, $2, $3, $4, $5)
         """
-        await self.connection.execute(query, equipment_code, equipment_type, condition.value, employee_code, region_code)
+        await self.connection.execute(query, equipment_code, equipment_type, condition.value, employee_code,
+                                      region_code)
 
     async def update_equipment_condition(self, equipment_code: int, new_condition: EquipmentCondition) -> None:
         query = """

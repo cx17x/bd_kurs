@@ -1,0 +1,3 @@
+
+class AccessDny(Exception):
+    pass

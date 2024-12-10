@@ -1,0 +1,62 @@
+/* General Styles */
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-color: #f2f2f2;
+    font-family: Arial, sans-serif;
+}
+
+.main-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+}
+
+..button-group {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    flex-wrap: nowrap; /* Prevent buttons from wrapping */
+    overflow-x: auto; /* Enable horizontal scrolling */
+}
+
+button {
+    background-color: #555;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 10px;
+    width: 120px;
+    height: 120px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+button:hover {
+    background-color: #666;
+}
+
+/* Styles for button group */
+.button-group {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+/* Media query for responsiveness */
+@media screen and (max-width: 600px) {
+    .button-group {
+        flex-direction: column;
+    }
+    button {
+        margin: 10px 0;
+    }
+}

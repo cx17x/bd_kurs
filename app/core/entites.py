@@ -74,3 +74,24 @@ class Employee:  # Employee
     position: str
     salary: float
     plot_code: Optional[int] = None
+
+
+#
+# @dataclasses.dataclass
+# class User:
+#     id: int
+#     username: str
+#
+
+class User:
+    def __init__(self, user_id: int, username: str, password: str, role: str):
+        self.user_id = user_id
+        self.username = username
+        self.password = password  # Store hashed passwords in a real application
+        self.role = role
+
+
+@dataclasses.dataclass
+class LoginData:
+    username: str
+    password: str

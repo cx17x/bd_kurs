@@ -4,8 +4,8 @@ from asyncpg import Connection
 from fastapi import APIRouter, HTTPException, Depends
 from app.core.entites import HarvestType
 from app.data.datebase import get_db_connection
-from app.data.sql.sql_db_getter.sql_db_getter import SQLDBGetter
-from app.data.sql.sql_harvest_gateway.sql_harvest_gateway import SQLHarvestDBGateway
+from app.data.sql.sql_db_getter import SQLDBGetter
+from app.data.sql.sql_harvest_gateway import SQLHarvestDBGateway
 
 harvest_gateway = APIRouter()
 
