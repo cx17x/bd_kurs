@@ -30,6 +30,23 @@ async def get_order_by_number(order_number: int, connection: asyncpg.Connection 
     return order
 
 
+# @order_gateway.delete("/admin/order/{order_number}", status_code=200)
+# async def delete_order(order_number: int, connection: asyncpg.Connection = Depends(get_db_connection)):
+#     gateway = SQLDBGetter(connection)
+#
+#     # Проверяем, существует ли запись с указанным order_number
+#     existing_order = await gateway.get_by_id("Orders", "order_number", order_number)
+#     if not existing_order:
+#         raise HTTPException(status_code=404, detail="Order not found")
+#
+#     try:
+#         await gateway.delete_by_id("Orders", "order_number", order_number)
+#     except Exception as e:
+#         raise HTTPException(status_code=400, detail=f"Error deleting order: {str(e)}")
+#
+#     return {"status": "success", "message": "Order deleted successfully"}
+#
+
 @order_gateway.post("/create", status_code=201)
 async def create_order(
         order_request: OrderCreateRequest,

@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1 class="header">Employee Table</h1>
+      <link rel="stylesheet" href="tables.css">
+  <!-- Search Form -->
+  <form action="/admin/employee_table" method="get">
+      <input type="text" name="employee_code" placeholder="Enter Employee ID" required>
+      <button type="submit">Search by ID</button>
+  </form>
+
+  <!-- Table and Buttons Container -->
+  <div class="table-and-buttons-container">
+      <!-- Table -->
+      {% if employee %}
+          <!-- Display single employee details -->
+          <h2>Employee Details</h2>
+          <table>
+              <tbody>
+                  {% for key, value in employee.items() %}
+                      <tr>
+                          <th>{{ key }}</th>
+                          <td>{{ value }}</td>
+                      </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+      {% elif employees %}
+          <!-- Display all employees table -->
+          <table>
+              <thead>
+                  <tr>
+                      {% for key in employees[0].keys() %}
+                          <th>{{ key }}</th>
+                      {% endfor %}
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for employee in employees %}
+                      <tr>
+                          {% for value in employee.values() %}
+                              <td>{{ value }}</td>
+                          {% endfor %}
+                      </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+      {% else %}
+          {% if error %}
+              <p>{{ error }}</p>
+          {% else %}
+              <p>No employees found.</p>
+          {% endif %}
+      {% endif %}
+
+      <!-- Buttons -->
+      <div class="button-container">
+          <button onclick="location.href='/employee_table'">Show All Employees</button>
+          <!-- Add more buttons here if needed -->
+      </div>
+  </div>
+{% endblock %}

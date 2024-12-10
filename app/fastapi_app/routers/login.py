@@ -24,11 +24,13 @@ async def login(response: Response, login_data: LoginData):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
 
+# Маршрут для админской страницы
 @login_m.get("/admin", dependencies=[Depends(admin_only)])
 async def admin_page(request: Request):
-    return templates.TemplateResponse("admin.html", {"request": request})
+    return templates.TemplateResponse("admin/admin.html", {"request": request})
 
 
+# Маршрут для пользовательской страницы
 @login_m.get("/user", dependencies=[Depends(authenticate_user)])
 async def user_page(request: Request):
-    return templates.TemplateResponse("user.html", {"request": request})
+    return templates.TemplateResponse("user/user.html", {"request": request})

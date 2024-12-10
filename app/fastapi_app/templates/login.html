@@ -36,9 +36,9 @@
             if (response.ok) {
                 const data = await response.json();
                 if (data.role === 'admin') {
-                    window.location.href = '/admin.html';
+                    window.location.href = '/admin';
                 } else {
-                    window.location.href = '/user.html';
+                    window.location.href = '/user';
                 }
             } else {
                 const errorText = await response.text();

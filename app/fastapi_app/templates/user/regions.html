@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1 class="header">Regions Table</h1>
+    <link rel="stylesheet" href="tables.css">
+
+  <!-- Search Form -->
+  <form action="/region_table" method="get">
+      <input type="text" name="plot_code" placeholder="Enter Plot Code" required>
+      <button type="submit">Search by Plot Code</button>
+  </form>
+
+  <!-- Table and Buttons Container -->
+  <div class="table-and-buttons-container">
+      <!-- Table -->
+      {% if region %}
+          <!-- Display single region details -->
+          <h2>Region Details</h2>
+          <table>
+              <tbody>
+                  {% for key, value in region.items() %}
+                      <tr>
+                          <th>{{ key }}</th>
+                          <td>{{ value }}</td>
+                      </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+      {% elif regions %}
+          <!-- Display all regions table -->
+          <table>
+              <thead>
+                  <tr>
+                      {% for key in regions[0].keys() %}
+                          <th>{{ key }}</th>
+                      {% endfor %}
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for region in regions %}
+                      <tr>
+                          {% for value in region.values() %}
+                              <td>{{ value }}</td>
+                          {% endfor %}
+                      </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+      {% else %}
+          {% if error %}
+              <p>{{ error }}</p>
+          {% else %}
+              <p>No regions found.</p>
+          {% endif %}
+      {% endif %}
+
+      <!-- Buttons -->
+      <div class="button-container">
+          <button onclick="location.href='/region_table'">Show All Regions</button>
+          <!-- Add more buttons here if needed -->
+      </div>
+  </div>
+{% endblock %}

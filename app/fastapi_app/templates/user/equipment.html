@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1 class="header">Equipment Table</h1>
+    <link rel="stylesheet" href="tables.css">
+
+  <!-- Search Form -->
+  <form action="/equipment_table" method="get">
+      <input type="text" name="equipment_code" placeholder="Enter Equipment Code" required>
+      <button type="submit">Search by Code</button>
+  </form>
+  <!-- Table and Buttons Container -->
+  <div class="table-and-buttons-container">
+      <!-- Table -->
+      {% if equipment %}
+          <!-- Display single equipment details -->
+          <h2>Equipment Details</h2>
+          <table>
+              <tbody>
+                  {% for key, value in equipment.items() %}
+                      <tr>
+                          <th>{{ key }}</th>
+                          <td>{{ value }}</td>
+                      </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+      {% elif equipment_list %}
+          <!-- Display all equipment table -->
+          <table>
+              <thead>
+                  <tr>
+                      {% for key in equipment_list[0].keys() %}
+                          <th>{{ key }}</th>
+                      {% endfor %}
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for equipment in equipment_list %}
+                      <tr>
+                          {% for value in equipment.values() %}
+                              <td>{{ value }}</td>
+                          {% endfor %}
+                      </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+      {% else %}
+          {% if error %}
+              <p>{{ error }}</p>
+          {% else %}
+              <p>No equipment found.</p>
+          {% endif %}
+      {% endif %}
+
+      <!-- Buttons -->
+      <div class="button-container">
+          <button onclick="location.href='/equipment_table'">Show All Equipment</button>
+          <!-- Add more buttons here if needed -->
+      </div>
+  </div>
+{% endblock %}

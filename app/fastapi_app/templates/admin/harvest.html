@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1 class="header">Harvest Table</h1>
+  <link rel="stylesheet" href="tables.css">
+
+  <!-- Search Form -->
+  <form action="/admin/harvest_table" method="get" class="search-form">
+      <input type="number" name="harvest_code" placeholder="Enter Harvest Code" required>
+      <button type="submit">Search by Code</button>
+  </form>
+
+  <!-- Table and Buttons Container -->
+  <div class="table-and-buttons-container">
+      <!-- Table -->
+      {% if harvest %}
+          <!-- Display single harvest details -->
+          <h2>Harvest Details</h2>
+          <table>
+              <tbody>
+                  {% for key, value in harvest.items() %}
+                      <tr>
+                          <th>{{ key }}</th>
+                          <td>{{ value }}</td>
+                      </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+          <!-- Delete Harvest Button -->
+          <button onclick="deleteHarvest({{ harvest.harvest_code }})" class="delete-button">Delete Harvest</button>
+      {% elif harvests %}
+          <!-- Display all harvests table -->
+          <table>
+              <thead>
+                  <tr>
+                      {% for key in harvests[0].keys() %}
+                          <th>{{ key }}</th>
+                      {% endfor %}
+                      <th>Actions</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for harvest in harvests %}
+                      <tr>
+                          {% for value in harvest.values() %}
+                              <td>{{ value }}</td>
+                          {% endfor %}
+                          <!-- Delete Harvest Button -->
+                          <td>
+                              <button onclick="deleteHarvest({{ harvest.harvest_code }})" class="delete-button">Delete</button>
+                          </td>
+                      </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+      {% else %}
+          {% if error %}
+              <p class="error">{{ error }}</p>
+          {% else %}
+              <p class="no-data">No harvests found.</p>
+          {% endif %}
+      {% endif %}
+
+      <!-- Buttons -->
+      <div class="button-container">
+          <button onclick="location.href='/admin/harvest_table'">Show All Harvests</button>
+          <!-- Add more buttons here if needed -->
+      </div>
+  </div>
+
+  <!-- JavaScript for DELETE request -->
+  <script>
+      async function deleteHarvest(harvestCode) {
+          if (confirm("Are you sure you want to delete this harvest?")) {
+              try {
+                  const response = await fetch(`/admin/harvest/${harvestCode}`, {
+                      method: "DELETE",
+                  });
+
+                  if (response.ok) {
+                      alert("Harvest deleted successfully!");
+                      location.reload(); // Reload the page to update the table
+                  } else {
+                      const data = await response.json();
+                      alert(`Error: ${data.detail}`);
+                  }
+              } catch (error) {
+                  alert("An error occurred while deleting the harvest.");
+              }
+          }
+      }
+  </script>
+{% endblock %}

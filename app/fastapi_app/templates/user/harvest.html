@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1 class="header">Harvest Table</h1>
+    <link rel="stylesheet" href="tables.css">
+  <!-- Search Form -->
+  <form action="/harvest_table" method="get">
+      <input type="text" name="harvest_code" placeholder="Enter Harvest Code" required>
+      <button type="submit">Search by Code</button>
+  </form>
+
+  <!-- Table and Buttons Container -->
+  <div class="table-and-buttons-container">
+      <!-- Table -->
+      {% if harvest %}
+          <!-- Display single harvest details -->
+          <h2>Harvest Details</h2>
+          <table>
+              <tbody>
+                  {% for key, value in harvest.items() %}
+                      <tr>
+                          <th>{{ key }}</th>
+                          <td>{{ value }}</td>
+                      </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+      {% elif harvests %}
+          <!-- Display all harvests table -->
+          <table>
+              <thead>
+                  <tr>
+                      {% for key in harvests[0].keys() %}
+                          <th>{{ key }}</th>
+                      {% endfor %}
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for harvest in harvests %}
+                      <tr>
+                          {% for value in harvest.values() %}
+                              <td>{{ value }}</td>
+                          {% endfor %}
+                      </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+      {% else %}
+          {% if error %}
+              <p>{{ error }}</p>
+          {% else %}
+              <p>No harvests found.</p>
+          {% endif %}
+      {% endif %}
+
+      <!-- Buttons -->
+      <div class="button-container">
+          <button onclick="location.href='/harvest_table'">Show All Harvests</button>
+          <!-- Add more buttons here if needed -->
+      </div>
+  </div>
+{% endblock %}

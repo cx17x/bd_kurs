@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1 class="header">Orders Table</h1>
+    <link rel="stylesheet" href="tables.css">
+  <!-- Search Form -->
+  <form action="/order_table" method="get">
+      <input type="text" name="order_number" placeholder="Enter Order Number" required>
+      <button type="submit">Search by Number</button>
+  </form>
+
+  <!-- Table and Buttons Container -->
+  <div class="table-and-buttons-container">
+      <!-- Table -->
+      {% if order %}
+          <!-- Display single order details -->
+          <h2>Order Details</h2>
+          <table>
+              <tbody>
+                  {% for key, value in order.items() %}
+                      <tr>
+                          <th>{{ key }}</th>
+                          <td>{{ value }}</td>
+                      </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+      {% elif orders %}
+          <!-- Display all orders table -->
+          <table>
+              <thead>
+                  <tr>
+                      {% for key in orders[0].keys() %}
+                          <th>{{ key }}</th>
+                      {% endfor %}
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for order in orders %}
+                      <tr>
+                          {% for value in order.values() %}
+                              <td>{{ value }}</td>
+                          {% endfor %}
+                      </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+      {% else %}
+          {% if error %}
+              <p>{{ error }}</p>
+          {% else %}
+              <p>No orders found.</p>
+          {% endif %}
+      {% endif %}
+
+      <!-- Buttons -->
+      <div class="button-container">
+          <button onclick="location.href='/order_table'">Show All Orders</button>
+          <!-- Add more buttons here if needed -->
+      </div>
+  </div>
+{% endblock %}

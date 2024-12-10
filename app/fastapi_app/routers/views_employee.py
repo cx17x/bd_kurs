@@ -3,11 +3,9 @@ from typing import Dict, List
 from asyncpg import Connection
 from fastapi import APIRouter, HTTPException, Depends
 
-
 from app.data.datebase import get_db_connection
 from app.data.sql.sql_db_getter import SQLDBGetter
 from app.data.sql.sql_employee_gateway import SQLEmployeeDBGateway
-from app.fastapi_app.auth import authenticate_user
 
 employee_gateway = APIRouter()
 
@@ -42,22 +40,19 @@ async def assign_to_plot(employee_code: int, plot_code: int, connection: Connect
         raise HTTPException(status_code=400, detail=str(e))
 
 
-@employee_gateway.get("/", dependencies=[Depends(authenticate_user)], response_model=List[Dict])
-async def get_all_employees(connection: Session = Depends(get_db_connection)) -> List[Dict]:
-    logger.info("Fetching all employees")
+@employee_gateway.get("/")
+async def get_all_employees(connection: Connection = Depends(get_db_connection)) -> List[Dict]:
+    """Получить все записи из таблицы Employee."""
     gateway = SQLDBGetter(connection)
-    employees = await gateway.get_all("Employee")
-    if not employees:
-        logger.warning("No employees found")
-    return employees
+    return await gateway.get_all("Employee")
 
-@employee_gateway.get("/{employee_code}", dependencies=[Depends(authenticate_user)], response_model=Dict)
-async def get_employee_by_id(employee_code: int, connection: Session = Depends(get_db_connection)) -> Dict:
-    logger.info(f"Fetching employee with code {employee_code}")
+
+@employee_gateway.get("/{employee_code}")
+async def get_employee_by_id(employee_code: int, connection: Connection = Depends(get_db_connection)) -> Dict:
+    """Получить сотрудника по ID."""
     gateway = SQLDBGetter(connection)
     employee = await gateway.get_by_id("Employee", "employee_code", employee_code)
     if not employee:
-        logger.warning(f"Employee with code {employee_code} not found")
         raise HTTPException(status_code=404, detail="Employee not found")
     return employee
 

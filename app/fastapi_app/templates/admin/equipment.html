@@ -1,0 +1,93 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <h1 class="header">Equipment Table</h1>
+  <link rel="stylesheet" href="/static/tables.css">
+
+  <!-- Search Form -->
+  <form action="/admin/equipment_table" method="get" class="search-form">
+      <input type="number" name="equipment_code" placeholder="Enter Equipment Code" required>
+      <button type="submit">Search by Code</button>
+  </form>
+
+  <!-- Table and Buttons Container -->
+  <div class="table-and-buttons-container">
+      <!-- Table -->
+      {% if equipment %}
+          <!-- Display single equipment details -->
+          <h2>Equipment Details</h2>
+          <table>
+              <tbody>
+                  {% for key, value in equipment.items() %}
+                      <tr>
+                          <th>{{ key }}</th>
+                          <td>{{ value }}</td>
+                      </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+          <!-- Delete Equipment Button -->
+          <button onclick="deleteEquipment({{ equipment.equipment_code }})" class="delete-button">Delete Equipment</button>
+      {% elif equipment_list %}
+          <!-- Display all equipment table -->
+          <table>
+              <thead>
+                  <tr>
+                      {% for key in equipment_list[0].keys() %}
+                          <th>{{ key }}</th>
+                      {% endfor %}
+                      <th>Actions</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  {% for equipment in equipment_list %}
+                      <tr>
+                          {% for value in equipment.values() %}
+                              <td>{{ value }}</td>
+                          {% endfor %}
+                          <!-- Delete Equipment Button -->
+                          <td>
+                              <button onclick="deleteEquipment({{ equipment.equipment_code }})" class="delete-button">Delete</button>
+                          </td>
+                      </tr>
+                  {% endfor %}
+              </tbody>
+          </table>
+      {% else %}
+          {% if error %}
+              <p class="error">{{ error }}</p>
+          {% else %}
+              <p class="no-data">No equipment found.</p>
+          {% endif %}
+      {% endif %}
+
+      <!-- Buttons -->
+      <div class="button-container">
+          <button onclick="location.href='/admin/equipment_table'">Show All Equipment</button>
+          <!-- Add more buttons here if needed -->
+      </div>
+  </div>
+
+  <!-- JavaScript for DELETE request -->
+  <script>
+      async function deleteEquipment(equipmentCode) {
+          if (confirm("Are you sure you want to delete this equipment?")) {
+              try {
+                  const response = await fetch(`/admin/equipment/${equipmentCode}`, {
+                      method: "DELETE",
+                  });
+
+                  if (response.ok) {
+                      alert("Equipment deleted successfully!");
+                      location.reload(); // Reload the page to update the table
+                  } else {
+                      const data = await response.json();
+                      alert(`Error: ${data.detail}`);
+                  }
+              } catch (error) {
+                  alert("An error occurred while deleting the equipment.");
+              }
+          }
+      }
+  </script>
+{% endblock %}
