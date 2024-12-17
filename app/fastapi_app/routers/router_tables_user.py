@@ -8,16 +8,30 @@ router_tables_user = APIRouter()
 
 
 @router_tables_user.get("/employee_table")
-async def employee_table(request: Request, connection=Depends(get_db_connection), employee_code: int = None):
+async def employee_table(request: Request,
+                         connection=Depends(get_db_connection),
+                         employee_code: int = None,
+                         sort: str = None,
+                         action: str = None):
     gateway = SQLDBGetter(connection)
-    if employee_code:
+
+    # Проверяем, передан ли параметр employee_code в запросе
+    if employee_code is not None:
+        # Попытка найти сотрудника по его ID
         employee = await gateway.get_by_id("Employee", "employee_code", employee_code)
         if not employee:
             return render_template('employees.html', error="Employee not found")
         return render_template('employees.html', employee=employee)
-    else:
+
+    # Обработка действия "Show All Employees"
+    if action == "show_all" or not employee_code:
         employees = await gateway.get_all("Employee")
-        return render_template('employees.html', employees=employees)
+
+    # Сортировка по столбцу
+    if sort and employees:
+        employees = sorted(employees, key=lambda x: x.get(sort, ""))
+
+    return render_template('employees.html', employees=employees)
 
 
 async def get_by_id(self, table_name, id_column, id_value):
