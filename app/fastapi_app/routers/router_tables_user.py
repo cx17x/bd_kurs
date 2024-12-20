@@ -57,16 +57,32 @@ async def equipment_table(request: Request, connection=Depends(get_db_connection
 
 
 @router_tables_user.get("/harvest_table")
-async def harvest_table(request: Request, connection=Depends(get_db_connection), harvest_code: int = None):
+async def harvest_table(request: Request,
+                        connection=Depends(get_db_connection),
+                        harvest_code: int = None,
+                        sort: str = None,
+                        action: str = None):
     gateway = SQLDBGetter(connection)
-    if harvest_code:
-        harvest = await gateway.get_by_id("Harvest", "harvest_code", harvest_code)
+
+    # Проверка параметра harvest_code: поиск конкретной записи
+    if harvest_code is not None:
+        harvest = await gateway.get_by_id("harvest", "harvest_code", harvest_code)
         if not harvest:
             return render_template('harvest.html', error="Harvest not found")
         return render_template('harvest.html', harvest=harvest)
+
+    # Обработка действия "Show All Harvests"
+    if action == "show_all" or not harvest_code:
+        harvests = await gateway.get_all("harvest")
     else:
-        harvests = await gateway.get_all("Harvest")
-        return render_template('harvest.html', harvests=harvests)
+        harvests = []
+
+    # Сортировка по столбцу, если параметр sort передан
+    if sort and harvests:
+        harvests = sorted(harvests, key=lambda x: x.get(sort, ""))
+
+    # Возвращение данных в шаблон
+    return render_template('harvest.html', harvests=harvests)
 
 
 @router_tables_user.get("/order_table")

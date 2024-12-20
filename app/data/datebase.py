@@ -12,7 +12,7 @@ class Database:
         self.pool: asyncpg.Pool = None
 
         self.users = [
-            User(1, "admin", "adminpass", "admin"),
+            User(1, "321", "321", "admin"),
             User(2, "123", "123", "user")
         ]
         self.tables = {

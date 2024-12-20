@@ -1,62 +1,183 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1 class="header">Harvest Table</h1>
-    <link rel="stylesheet" href="tables.css">
-  <!-- Search Form -->
-  <form action="/harvest_table" method="get">
-      <input type="text" name="harvest_code" placeholder="Enter Harvest Code" required>
-      <button type="submit">Search by Code</button>
-  </form>
+<!-- Стили в блоке -->
+<style>
+    /* Основные стили для контейнера */
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #333;
+        font-family: Arial, sans-serif;
+    }
 
-  <!-- Table and Buttons Container -->
-  <div class="table-and-buttons-container">
-      <!-- Table -->
-      {% if harvest %}
-          <!-- Display single harvest details -->
-          <h2>Harvest Details</h2>
-          <table>
-              <tbody>
-                  {% for key, value in harvest.items() %}
-                      <tr>
-                          <th>{{ key }}</th>
-                          <td>{{ value }}</td>
-                      </tr>
-                  {% endfor %}
-              </tbody>
-          </table>
-      {% elif harvests %}
-          <!-- Display all harvests table -->
-          <table>
-              <thead>
-                  <tr>
-                      {% for key in harvests[0].keys() %}
-                          <th>{{ key }}</th>
-                      {% endfor %}
-                  </tr>
-              </thead>
-              <tbody>
-                  {% for harvest in harvests %}
-                      <tr>
-                          {% for value in harvest.values() %}
-                              <td>{{ value }}</td>
-                          {% endfor %}
-                      </tr>
-                  {% endfor %}
-              </tbody>
-          </table>
-      {% else %}
-          {% if error %}
-              <p>{{ error }}</p>
-          {% else %}
-              <p>No harvests found.</p>
-          {% endif %}
-      {% endif %}
+    /* Контейнер для кнопок и форм */
+    .form-container {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
 
-      <!-- Buttons -->
-      <div class="button-container">
-          <button onclick="location.href='/harvest_table'">Show All Harvests</button>
-          <!-- Add more buttons here if needed -->
-      </div>
-  </div>
+    /* Стили для таблицы */
+    table {
+        width: 80%;
+        margin: auto;
+        border-collapse: separate;
+        border-spacing: 0;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        font-family: Arial, sans-serif;
+    }
+
+    thead {
+        background-color: #4CAF50;
+        color: white;
+        text-transform: uppercase;
+    }
+
+    thead th {
+        padding: 12px 15px;
+        text-align: center;
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: #f9f9f9; /* Зебра-стиль */
+    }
+
+    tbody tr:hover {
+        background-color: #e8f5e9;
+        transform: scale(1.01);
+        transition: all 0.3s ease;
+    }
+
+    td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: center;
+    }
+
+    /* Кнопки */
+    button, input[type="submit"] {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    button {
+        background-color: #4CAF50;
+        color: white;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    .secondary-button {
+        background-color: #3498db;
+        color: white;
+    }
+
+    .secondary-button:hover {
+        background-color: #2980b9;
+    }
+
+    .danger-button {
+        background-color: #e74c3c;
+        color: white;
+    }
+
+    .danger-button:hover {
+        background-color: #c0392b;
+    }
+
+    /* Контейнер для нижних кнопок */
+    .bottom-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-top: 20px;
+    }
+</style>
+
+<!-- Главный заголовок -->
+<h1 class="header">Урожай</h1>
+
+<!-- Контейнер для форм поиска и кнопок -->
+<div class="form-container">
+    <!-- Форма поиска урожая по коду -->
+    <form action="/harvest_table" method="get" style="display: flex; align-items: center;">
+        <input type="text" name="harvest_code" placeholder="Enter Harvest Code" required
+               style="padding: 10px; border: 1px solid #ccc; border-radius: 5px; margin-right: 10px;">
+        <button type="submit">Поиск по коду</button>
+    </form>
+
+    <!-- Кнопка для отображения всех урожаев -->
+    <form action="/harvest_table" method="get">
+        <button type="submit" name="action" value="show_all" class="secondary-button">Показать весь урожай</button>
+    </form>
+</div>
+
+<!-- Таблица урожаев -->
+<div>
+    <table>
+        <thead>
+        <tr>
+            <th>
+                <form action="/harvest_table" method="get" style="display: inline;">
+                    <button type="submit" name="sort" value="harvest_code">Код урожая</button>
+                </form>
+            </th>
+            <th>
+                <form action="/harvest_table" method="get" style="display: inline;">
+                    <button type="submit" name="sort" value="harvest_name">Тип урожая</button>
+                </form>
+            </th>
+            <th>
+                <form action="/harvest_table" method="get" style="display: inline;">
+                    <button type="submit" name="sort" value="harvest_date">Количество</button>
+                </form>
+            </th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if harvest %}
+        <tr>
+            {% for key, value in harvest.items() %}
+                <td>{{ value }}</td>
+            {% endfor %}
+        </tr>
+        {% elif harvests %}
+            {% for harvest in harvests %}
+                <tr>
+                    {% for value in harvest.values() %}
+                        <td>{{ value }}</td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="4">No harvests found.</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Дополнительные кнопки внизу -->
+<div class="bottom-buttons">
+    <!-- Кнопка для возврата на главную страницу -->
+    <form action="/user" method="get">
+        <button type="submit" class="secondary-button">Вернуться в меню</button>
+    </form>
+
+    <!-- Кнопка выхода из аккаунта -->
+    <form action="/login.html" method="get">
+        <button type="submit" class="danger-button">Выйти из аккаунта</button>
+    </form>
+</div>
 {% endblock %}

@@ -1,93 +1,194 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <h1 class="header">Employee Table</h1>
-  <link rel="stylesheet" href="/static/tables.css">
+<!-- Встроенные стили для улучшенного оформления -->
+<style>
+    h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #333;
+        font-family: Arial, sans-serif;
+    }
 
-  <!-- Search Form -->
-  <form action="/admin/employee_table" method="get" class="search-form">
-      <input type="text" name="employee_code" placeholder="Enter Employee ID" required>
-      <button type="submit">Search by ID</button>
-  </form>
+    .form-container {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
 
-  <!-- Table and Buttons Container -->
-  <div class="table-and-buttons-container">
-      <!-- Table -->
-      {% if employee %}
-          <!-- Display single employee details -->
-          <h2>Employee Details</h2>
-          <table>
-              <tbody>
-                  {% for key, value in employee.items() %}
-                      <tr>
-                          <th>{{ key }}</th>
-                          <td>{{ value }}</td>
-                      </tr>
-                  {% endfor %}
-              </tbody>
-          </table>
-          <!-- Delete Employee Button -->
-          <button onclick="deleteEmployee({{ employee.employee_code }})" class="delete-button">Delete Employee</button>
-      {% elif employees %}
-          <!-- Display all employees table -->
-          <table>
-              <thead>
-                  <tr>
-                      {% for key in employees[0].keys() %}
-                          <th>{{ key }}</th>
-                      {% endfor %}
-                      <th>Actions</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  {% for employee in employees %}
-                      <tr>
-                          {% for value in employee.values() %}
-                              <td>{{ value }}</td>
-                          {% endfor %}
-                          <!-- Delete Employee Button -->
-                          <td>
-                              <button onclick="deleteEmployee({{ employee.employee_code }})" class="delete-button">Delete</button>
-                          </td>
-                      </tr>
-                  {% endfor %}
-              </tbody>
-          </table>
-      {% else %}
-          {% if error %}
-              <p class="error">{{ error }}</p>
-          {% else %}
-              <p class="no-data">No employees found.</p>
-          {% endif %}
-      {% endif %}
+    table {
+        width: 80%;
+        margin: auto;
+        border-collapse: collapse;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        font-family: Arial, sans-serif;
+    }
 
-      <!-- Buttons -->
-      <div class="button-container">
-          <button onclick="location.href='/admin/employee_table'">Show All Employees</button>
-          <!-- Add more buttons here if needed -->
-      </div>
-  </div>
+    th, td {
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        text-align: center;
+    }
 
-  <!-- JavaScript for DELETE request -->
-  <script>
-      async function deleteEmployee(employeeCode) {
-          if (confirm("Are you sure you want to delete this employee?")) {
-              try {
-                  const response = await fetch(`/admin/employee/${employeeCode}`, {
-                      method: "DELETE",
-                  });
+    thead th {
+        background-color: #4CAF50;
+        color: white;
+    }
 
-                  if (response.ok) {
-                      alert("Employee deleted successfully!");
-                      location.reload(); // Reload the page to update the table
-                  } else {
-                      const data = await response.json();
-                      alert(`Error: ${data.detail}`);
-                  }
-              } catch (error) {
-                  alert("An error occurred while deleting the employee.");
-              }
-          }
-      }
-  </script>
+    tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    tbody tr:hover {
+        background-color: #e8f5e9;
+        transition: all 0.3s ease;
+    }
+
+    button, input[type="submit"] {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s;
+    }
+
+    button {
+        background-color: #4CAF50;
+        color: white;
+    }
+
+    button:hover {
+        background-color: #45a049;
+    }
+
+    .delete-button {
+        background-color: #e74c3c;
+        color: white;
+    }
+
+    .delete-button:hover {
+        background-color: #c0392b;
+    }
+
+    .secondary-button {
+        background-color: #3498db;
+        color: white;
+    }
+
+    .secondary-button:hover {
+        background-color: #2980b9;
+    }
+
+    .error, .no-data {
+        text-align: center;
+        font-size: 1.2em;
+        color: #e74c3c;
+    }
+</style>
+
+<!-- Заголовок страницы -->
+<h1>Employee Table</h1>
+
+<!-- Контейнер формы поиска и кнопок -->
+<div class="form-container">
+    <!-- Форма поиска сотрудника -->
+    <form action="/admin/employee_table" method="get">
+        <input type="number" name="employee_code" placeholder="Enter Employee ID" required
+               style="padding: 10px; border: 1px solid #ccc; border-radius: 5px;">
+        <button type="submit" class="secondary-button">Search by ID</button>
+    </form>
+    <!-- Кнопка для отображения всех сотрудников -->
+    <form action="/admin/employee_table" method="get">
+        <button type="submit" class="secondary-button">Show All Employees</button>
+    </form>
+</div>
+
+<!-- Таблица данных сотрудников -->
+<div>
+    {% if employee %}
+        <!-- Отображение одного сотрудника -->
+        <h2 style="text-align: center;">Employee Details</h2>
+        <table>
+            <tbody>
+            {% for key, value in employee.items() %}
+                <tr>
+                    <th>{{ key }}</th>
+                    <td>{{ value }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <!-- Кнопка удаления сотрудника -->
+        <div style="text-align: center; margin-top: 20px;">
+            <button onclick="deleteEmployee({{ employee.employee_code }})" class="delete-button">Delete Employee</button>
+        </div>
+
+    {% elif employees %}
+        <!-- Отображение всех сотрудников -->
+        <table>
+            <thead>
+            <tr>
+                {% for key in employees[0].keys() %}
+                    <th>{{ key }}</th>
+                {% endfor %}
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for emp in employees %}
+                <tr>
+                    {% for value in emp.values() %}
+                        <td>{{ value }}</td>
+                    {% endfor %}
+                    <td>
+                        <button onclick="deleteEmployee({{ emp.employee_code }})" class="delete-button">Delete</button>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <!-- Сообщение об ошибке или отсутствии данных -->
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% else %}
+            <p class="no-data">No employees found.</p>
+        {% endif %}
+    {% endif %}
+</div>
+
+<!-- JavaScript для удаления сотрудника -->
+<script>
+    async function deleteEmployee(employeeCode) {
+        if (confirm("Are you sure you want to delete this employee?")) {
+            try {
+                const response = await fetch(`/admin/employee/${employeeCode}`, {
+                    method: "DELETE",
+                });
+
+                if (response.ok) {
+                    alert("Employee deleted successfully!");
+                    location.reload();
+                } else {
+                    const data = await response.json();
+                    alert(`Error: ${data.detail}`);
+                }
+            } catch (error) {
+                alert("An error occurred while deleting the employee.");
+            }
+        }
+    }
+</script>
+
+<!-- Кнопки внизу -->
+<div style="text-align: center; margin-top: 20px;">
+    <form action="/admin/dashboard" method="get" style="display: inline;">
+        <button type="submit" class="secondary-button">Return to Dashboard</button>
+    </form>
+    <form action="/login" method="get" style="display: inline;">
+        <button type="submit" class="delete-button">Logout</button>
+    </form>
+</div>
 {% endblock %}
